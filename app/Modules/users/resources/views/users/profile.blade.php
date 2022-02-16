@@ -39,19 +39,15 @@
                                         <td>
                                             <p><code class="highlighter-rouge">Image</code></p>
                                         </td>
-                                        <td><span>
-                                                @if (count(Auth::user()->getMedia('avatar')) > 0)
-                                                    @foreach(Auth::user()->getMedia('avatar') as $file)
-                                                        <img alt="Preview Image 1" class="w-25 p-3"
-                                                             src="{{asset('storage/'.$file->id.'/'.$file->file_name)}}"
-                                                             data-image="{{asset('storage/'.$file->id.'/'.$file->file_name)}}"
-                                                             data-description="">
-                                                    @endforeach
-                                                @else
-                                                    <img alt="Pic" src="{{asset("assets/media/users/default.jpg")}}"/>
-                                                @endif
+                                        <td>
+                                            <span>
+                                                  <img alt="Preview Image 1" class="w-25 p-3"
+                                                  src="{{ $user->getFirstMedia('avatar') ? $user->getFirstMedia('avatar')->getUrl() : asset('assets/media/users/default.jpg')}}"
+                                                  data-image="{{ $user->getFirstMedia('avatar') ? $user->getFirstMedia('avatar')->getUrl() : asset('assets/media/users/default.jpg')}}"
+                                                  data-description="">
 
-                                            </span></td>
+                                            </span>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>

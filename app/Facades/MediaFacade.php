@@ -239,6 +239,7 @@ class MediaFacade
      */
     static function attachLogoAvatarAndOtherSame($image, $item, $collectionName)
     {
+
 //        try {
             $error = 0;
             if (self::validateFiles($collectionName, $image, self::allSize($collectionName))) {//put limit for image
@@ -269,7 +270,7 @@ class MediaFacade
      */
     static function addToMedia($file, $item, $key)
     {
-        try {
+//        try {
 
         if ($key == 'video') {
             $item->media()->where('collection_name', $key)->delete();
@@ -281,11 +282,12 @@ class MediaFacade
 //                self::waterMark($pathToFile);
 //            }
         $id_item = $item->addMedia(base_path() . '/' . $pathToFile)->setName($file->getClientOriginalName())->toMediaCollection($key);
-        return true;
-        } catch (Exception $e) {
 
-            return false;
-        }
+        return true;
+//        } catch (Exception $e) {
+//
+//            return false;
+//        }
     }
 
     public static function waterMark($pathToFile)
