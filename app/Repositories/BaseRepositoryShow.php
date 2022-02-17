@@ -20,9 +20,9 @@ class BaseRepositoryShow extends BaseRepository
      * @param array $columns
      * @return LengthAwarePaginator
      */
-    public function paginate(array $search = [],int $perPage, array $columns = ['*'], $skip = null, $limit = null): LengthAwarePaginator
+    public function paginate(array $search = [],int $perPage, array $columns = ['*'], $skip = null, $limit = null, $orderBy = null): LengthAwarePaginator
     {
-        $query = $this->allQuery($search, $skip, $limit);
+        $query = $this->allQuery($search, $skip, $limit, $orderBy);
         return $query->paginate($perPage, $columns);
     }
 
@@ -34,7 +34,7 @@ class BaseRepositoryShow extends BaseRepository
      * @param int|null $limit
      * @return Builder
      */
-    public function allQuery(array $search = [], int $skip = null, int $limit = null): Builder
+    public function allQuery(array $search = [], int $skip = null, int $limit = null, $orderBy = null): Builder
     {
         $query = $this->model->newQuery();
 
@@ -49,11 +49,23 @@ class BaseRepositoryShow extends BaseRepository
         if (!is_null($limit)) {
             $query->limit($limit);
         }
+        if (!empty($orderBy)) {
+                $query = $this->orderByToQuery($query, $orderBy);
+
+        }
 
         MoreImplementation::reset();
         return $query;
     }
 
+    //$orderBy = [['seen', 'asc'],['seen', 'asc']];
+    public function orderByToQuery($query, $orderBy)
+    {
+        foreach ($orderBy as $key => $value) {
+            $query = $query->orderBy($value[0], $value[1]);
+        }
+        return $query;
+    }
 
     /**
      * Retrieve all records with given filter criteria
