@@ -9,6 +9,7 @@ copy .env.example to .env
 docker exec -i laravel_php bash /usr/local/bin/dockerInit
 
 http://localhost:8090 => for phpmyadmin
+
 localhost => for project
 
 ### From the second time onwards
