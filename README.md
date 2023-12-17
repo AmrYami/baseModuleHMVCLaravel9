@@ -9,8 +9,9 @@ copy .env.example to .env
 docker exec -i laravel_php bash /usr/local/bin/dockerInit
 
 http://localhost:8090 => for phpmyadmin
+http://localhost:8091 => for phpmyadminTest
 
-localhost => for project
+localhost:8070 => for project
 
 ### From the second time onwards
 - `docker-compose exec laravel_php bash`
@@ -38,7 +39,9 @@ localhost => for project
     - `php artisan schedule:clear-cache`
 - Flush expired password reset tokens
     - `php artisan auth:clear-resets`
-    
+===============================================================================
+
+#if you dont use docker
     # BaseModule
 first just you need to do composer update then do php artisan migrate --seed
 create directory public/upload/media

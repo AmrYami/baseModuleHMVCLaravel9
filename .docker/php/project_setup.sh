@@ -15,10 +15,18 @@ chown -R www-data storage bootstrap/cache && \
 chmod -R ug+rwx storage bootstrap/cache && \
 chmod 776 storage/ -R
 #now running composer install and npm install
-composer update  --ignore-platform-reqs && npm install
+composer update  --ignore-platform-reqs #&& npm install
 #finally rebuild npm to serve prod.
-npm run prod
+# npm run prod
+
+php artisan key:generate
+
 php artisan migrate --seed
+
 php artisan config:clear && php artisan config:cache
 echo "Permission setup Done... Project now ready to serve"
+
+php artisan test
+
 exec "$@"
+
