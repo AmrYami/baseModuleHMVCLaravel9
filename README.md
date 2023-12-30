@@ -1,3 +1,5 @@
+                        # BaseModule
+**********************************************************
 copy .env.example to .env
 
 # Notes
@@ -5,7 +7,7 @@ copy .env.example to .env
 - Create and start containers
     docker compose up --build -d
 
-# commend for script (composer install and artisan commends)
+# commend for script (composer install and artisan commends  and start test cases)
 docker exec -i laravel_php bash /usr/local/bin/dockerInit
 
 http://localhost:8090 => for phpmyadmin
@@ -42,7 +44,7 @@ localhost:8070 => for project
 ===============================================================================
 
 #if you dont use docker
-    # BaseModule
+
 first just you need to do composer update then do php artisan migrate --seed
 create directory public/upload/media
 table users using engine myisam to use full text search

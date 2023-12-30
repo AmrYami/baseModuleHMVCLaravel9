@@ -46,8 +46,9 @@
                             <div class="form-group">
                                 <input id="email" type="email" class="form-control
                                     @if(isset($error) && isset($error->email))
-                                        @error('email') is-invalid @enderror"
+                                        @error('email') is-invalid @enderror
                                        @endif
+                                       "
                                        name="email" value="{{ old('email') }}" required autocomplete="email"
                                        placeholder="Email" autofocus>
                                 @if(isset($error) && isset($error->email))
@@ -62,8 +63,9 @@
                                 <input id="password" type="password"
                                        class="form-control
                                            @if(isset($error) && isset($error->password))
-                                            @error('password') is-invalid @enderror"
+                                            @error('password') is-invalid @enderror
                                            @endif
+                                           "
                                        name="password"
                                        required autocomplete="current-password" placeholder='Password'>
                                 @if(isset($error) && isset($error->password))
