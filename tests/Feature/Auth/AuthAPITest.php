@@ -3,11 +3,21 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Tests\TestCase;
 use Auth;
 
 class AuthAPITest extends TestCase
 {
+    protected $user;
+    protected $password;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::first();
+        $this->password = 'admin@admin.com';
+    }
 
     public function test_user_can_login_with_correct_credentials()
     {
@@ -60,78 +70,32 @@ class AuthAPITest extends TestCase
             ]);
     }
 
-//    public function test_refresh()
-//    {
-//        $user = User::first();
-//        $token = auth()->login($user, 'api');
-//        dd()
-//        $response = $this->actingAs($user, 'api')->post('/api/auth/refresh');
-//
-////        $response = $this->post('/api/auth/refresh', [], [
-////            "Content-Type" => "application/json",
-////            "Authorization" => "bearer " . $token
-////        ]);
-//
-//        $response
-//            ->assertStatus(200)
-//            ->assertJsonStructure([
-//                'token',
-//                'token_type',
-//                'expires_in',
-//                'user' => [
-//                    "id",
-//                    "name",
-//                    "user_name",
-//                    "email",
-//                    "mobile",
-//                    "email_verified_at",
-//                    "status",
-//                    "code",
-//                    "type",
-//                    "language",
-//                    "created_at",
-//                    "updated_at",
-//                    "deleted_at",
-//                    "banned_until",
-//                    "freeze"
-//                ]
-//            ]);
-//    }
-//
-//    public function test_a_user_can_register()
-//    {
-//        $user = [
-//            'name' => 'test' . rand(0, 50),
-//            'user_name' => 'testuser' . rand(0, 50),
-//            'email' => 'test' . rand(0, 50) . '@admin.com',
-//            'mobile' => '01011' . rand(0, 50) . '6241',
-//            'password' => 'admin@admin.com',
-//            'password_confirmation' => 'admin@admin.com',
-//            'type' => 'crm admin',
-//            'code' => uniqid(),
-//            'status' => 1
-//        ];
-//
-//        $response = $this->post('/register', $user, [
-//            "XSRF-TOKEN" => csrf_token(),
-//            "_token" => csrf_token()
-//        ]);
-//        unset($user['password_confirmation']);
-//        unset($user['code']);
-//        unset($user['password']);
-//        $this->assertAuthenticated();
-//        $this->assertDatabaseHas('users', $user);
-//    }
-//
-//    public function test_can_a_user_logout()
-//    {
-//        $user = User::first();
-//        $this->be($user);
-//        $response = $this->post(route('logout'));
-//
-//        $response->assertRedirect(route('login'));
-//        $this->assertGuest();
-//
-//    }
+    public function testLogout()
+    {
+        $token = JWTAuth::fromUser($this->user);
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->post('/api/auth/logout');
+        $response->assertStatus(200)
+            ->assertJsonStructure(['message']);
+
+        $this->assertGuest('api');
+    }
+
+    public function test_refresh()
+    {
+        $token = JWTAuth::fromUser($this->user);
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->post('/api/auth/refresh');
+        $response
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'token',
+                'token_type',
+                'expires_in',
+                'user'
+            ]);
+    }
 
 }
