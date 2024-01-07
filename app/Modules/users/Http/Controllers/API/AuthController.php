@@ -3,6 +3,7 @@
 namespace Users\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Users\Http\Resources\UserResource;
 use Users\Models\User;
 use App\Rules\ValidMail;
 use Carbon\Carbon;
@@ -79,7 +80,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json($this->guard()->user());
+        return UserResource::make(auth()->user());
     }
 
     /**
