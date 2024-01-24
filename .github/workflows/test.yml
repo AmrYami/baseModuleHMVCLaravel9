@@ -10,14 +10,16 @@ jobs:
   laravel-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: shivammathur/setup-php@b7d1d9c9a92d8d8463ce36d7f60da34d461724f8
+      - name: PHP
+        uses: shivammathur/setup-php@b7d1d9c9a92d8d8463ce36d7f60da34d461724f8
         with:
           php-version: '8.0'
-      - uses: actions/checkout@v2
+      - name: Cloning repo
+        uses: actions/checkout@v2
       - name: Stop Database
         run: sudo service mysql stop
       - name: Setup Database Config
-      - uses: mirromutth/mysql-action@v1.1
+        uses: mirromutth/mysql-action@v1.1
         with:
           mysql version: '8.0'
           mysql database: 'test'
