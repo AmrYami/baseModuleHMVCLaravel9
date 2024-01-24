@@ -37,8 +37,8 @@ jobs:
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
           DB_CONNECTION: mysql
-          DB_DATABASE: test
+          DB_DATABASE: test_db
           DB_PORT: 3306
-          DB_PASSWORD: secret
-          DB_USERNAME: root
+          DB_PASSWORD: test_db
+          DB_USERNAME: test_db
         run: vendor/bin/phpunit
