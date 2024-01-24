@@ -41,6 +41,6 @@ jobs:
           DB_PORT: 3306
           DB_PASSWORD: test_db
           DB_USERNAME: test_db
-        run:
+        run: |
           php artisan migrate
           vendor/bin/phpunit
