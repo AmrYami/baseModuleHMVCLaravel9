@@ -41,7 +41,6 @@ jobs:
           DB_PORT: 3306
           DB_PASSWORD: test_db
           DB_USERNAME: test_db
-      - name: Migrate
-        run: php artisan migrate
-      - name: run test
-        run: vendor/bin/phpunit
+        run:
+          php artisan migrate
+          vendor/bin/phpunit
