@@ -42,6 +42,6 @@ jobs:
           DB_PASSWORD: test_db
           DB_USERNAME: test_db
       - name: Migrate
-        run: php artisan migrate --seed
+        run: php artisan migrate
       - name: run test
         run: vendor/bin/phpunit
