@@ -22,8 +22,8 @@ jobs:
         uses: mirromutth/mysql-action@v1.1
         with:
           mysql version: '8.0'
-          mysql database: 'test'
-          mysql root password: 'secret'
+          mysql database: 'test_db'
+          mysql root password: 'test_db'
       - name: restart Database
         run: sudo service mysql restart
       - name: Copy .env
