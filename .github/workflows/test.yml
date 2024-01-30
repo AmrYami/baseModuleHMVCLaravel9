@@ -27,7 +27,7 @@ jobs:
       - name: restart Database
         run: sudo service mysql restart
       - name: Setup database user
-        run: mysql -u runner -e 'CREATE USER 'test_db'@'localhost' IDENTIFIED BY 'test_db';'
+        run: mysql -u test_db -e 'CREATE USER 'test_db'@'localhost' IDENTIFIED BY 'test_db';'
       - name: Flush privileges
         run: mysql -u test_db --password=test_db -e 'FLUSH PRIVILEGES;'
       - name: Create testing database
