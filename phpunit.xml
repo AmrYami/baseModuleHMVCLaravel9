@@ -25,7 +25,7 @@
         <env name="DB_DATABASE" value="test_db"/>
 <!--        <env name="DB_PORT" value="3306"/>-->
 <!--        <env name="DB_HOST" value="dbTest"/>-->
-        <env name="DB_USERNAME" value="test_db"/>
+        <env name="DB_USERNAME" value="root"/>
         <env name="DB_PASSWORD" value="test_db"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
