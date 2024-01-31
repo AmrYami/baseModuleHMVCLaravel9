@@ -45,7 +45,7 @@ jobs:
       - name: JWT Secret
         run: php artisan jwt:secret
       - name: Migrate Test Database
-        run: php artisan migrate --env=testing --seed --force
+        run: php artisan migrate --seed --force
         env:
           DB_PORT: 3306:3306/tcp
           REDIS_PORT: 6379
