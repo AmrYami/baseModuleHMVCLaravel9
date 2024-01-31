@@ -18,7 +18,7 @@ jobs:
           MYSQL_USER: 'test_db'
           MYSQL_PASSWORD: 'test_db'
         ports:
-          - 33306:3306/tcp
+          - 3306:3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
       redis:
         image: redis
@@ -27,8 +27,6 @@ jobs:
         options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
       strategy:
         fail-fast: false
-        matrix:
-          php-versions: [ '8.1' ]
     steps:
       - name: PHP
         uses: shivammathur/setup-php@b7d1d9c9a92d8d8463ce36d7f60da34d461724f8
@@ -49,7 +47,7 @@ jobs:
       - name: Migrate Test Database
         run: php artisan migrate --env=testing --seed --force
         env:
-          DB_PORT: 33306:3306/tcp
+          DB_PORT: 3306:3306/tcp
           REDIS_PORT: 6379
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
