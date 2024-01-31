@@ -36,12 +36,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Start mysql service
         run: sudo /etc/init.d/mysql start
-      - name: Setup database user
-        run: mysql -u test_db --password=test_db -e 'CREATE USER 'test_db'@'localhost' IDENTIFIED BY 'test_db';'
-      - name: Flush privileges
-        run: mysql -u test_db --password=test_db -e 'FLUSH PRIVILEGES;'
-      - name: Create testing database
-        run: mysql -u test_db --password=test_db -e 'CREATE DATABASE IF NOT EXISTS test_db;'
       - name: Migrate Test Database
         run: php artisan migrate --env=testing --seed --force
         env:
