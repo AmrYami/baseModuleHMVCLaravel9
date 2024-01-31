@@ -27,7 +27,7 @@ jobs:
       - name: restart Database
         run: sudo service mysql restart
       - name: Create testing database
-        run: mysql -u test_db --password=test_db -e 'CREATE DATABASE IF NOT EXISTS test_db;'
+        run: mysql -u root --password=test_db -e 'CREATE DATABASE IF NOT EXISTS test_db;'
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Dependencies
