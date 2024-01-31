@@ -57,5 +57,5 @@ jobs:
           DB_DATABASE: test_db
           DB_PORT: 3306
           DB_PASSWORD: test_db
-          DB_USERNAME: test_db
+          DB_USERNAME: root
         run: vendor/bin/phpunit
