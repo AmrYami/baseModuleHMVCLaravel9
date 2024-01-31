@@ -9,25 +9,48 @@ on:
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: 'test_db'
+          MYSQL_DATABASE: 'test_db'
+          MYSQL_USER: 'test_db'
+          MYSQL_PASSWORD: 'test_db'
+        ports:
+          - 33306:3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      redis:
+        image: redis
+        ports:
+          - 6379/tcp
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      strategy:
+        fail-fast: false
+        matrix:
+          php-versions: [ '8.1' ]
     steps:
       - name: PHP
         uses: shivammathur/setup-php@b7d1d9c9a92d8d8463ce36d7f60da34d461724f8
         with:
           php-version: '8.1'
+          extensions: mbstring, dom, fileinfo, mysql
+          coverage: xdebug #optional
       - name: Cloning repo
         uses: actions/checkout@v2
-      - name: Stop Database
-        run: sudo service mysql stop
-      - name: Setup Database Config
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          mysql version: '8.0'
-          mysql database: 'test_db'
-          mysql root password: 'test_db'
-      - name: restart Database
-        run: sudo service mysql restart
+      - name: Start mysql service
+        run: sudo /etc/init.d/mysql start
+      - name: Setup database user
+        run: mysql -u test_db -e 'CREATE USER 'test_db'@'localhost' IDENTIFIED BY 'test_db';'
+      - name: Flush privileges
+        run: mysql -u test_db --password=test_db -e 'FLUSH PRIVILEGES;'
       - name: Create testing database
-        run: mysql -u root --password=test_db -e 'CREATE DATABASE IF NOT EXISTS test_db;'
+        run: mysql -u test_db --password=test_db -e 'CREATE DATABASE IF NOT EXISTS test_db;'
+      - name: Migrate Test Database
+        run: php artisan migrate --env=testing --seed --force
+        env:
+          DB_PORT: 33306:3306/tcp
+          REDIS_PORT: 6379
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Dependencies
@@ -45,6 +68,4 @@ jobs:
           DB_PORT: 3306
           DB_PASSWORD: test_db
           DB_USERNAME: test_db
-        run: |
-          php artisan migrate
-          vendor/bin/phpunit
+        run: vendor/bin/phpunit
