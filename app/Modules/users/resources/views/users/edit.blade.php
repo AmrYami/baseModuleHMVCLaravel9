@@ -1,4 +1,4 @@
-@extends('layouts.core')
+@extends('dashboard.layouts.core')
 @section("page-name", trans("setup.Users"))
 @section("breadcrumb")
     <div class="d-flex align-items-center flex-wrap mr-1">
@@ -28,7 +28,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                {!! Form::model($user, ['route' => ['users.update', $user->id], 'method' =>'put', 'autocomplete' => 'off', 'enctype'=>"multipart/form-data"]) !!}
+                {!! html()->modelForm($user, 'PUT', route('users.update', $user->id))
+                    ->attribute('autocomplete', 'off')
+                    ->attribute('enctype', 'multipart/form-data')
+                    ->open()
+                !!}
                 <div class="card-header"><strong>{{trans("setup.Edit")}}</strong>
                     <div class="kt-portlet__head-toolbar float-right">
                         <div class="kt-portlet__head-wrapper">
@@ -37,7 +41,7 @@
                                         class="la la-arrow-left"></i>Back</span>
                             </a>
                             <div class="btn-group">
-                                {!! Form::button('<i class="fa fa-save"></i> Save', ['type'=>'submit', 'class' =>'btn  btn-info']) !!}
+                                {!! html()->button()->type('submit')->class('btn btn-info')->html('<i class="fa fa-save"></i> Save') !!}
                             </div>
                         </div>
                     </div>
@@ -47,7 +51,8 @@
                     @include('users::users.role_field')
                     @include('users::users.fields')
                 </div>
-                {!! Form::close() !!}
+
+                {!! html()->closeModelForm() !!}
             </div>
         </div>
         <!-- /.col-->
@@ -57,7 +62,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                {!! Form::model($user, ['route' => ['users.update_password', $user->id], 'method' =>'put', 'autocomplete' => 'off']) !!}
+                {!! html()->modelForm($user, 'PUT', route('users.update_password', $user->id))
+                     ->attribute('autocomplete', 'off')
+                     ->attribute('enctype', 'multipart/form-data')
+                     ->open()
+                 !!}
                 <div class="card-header"><strong>{{trans("setup.Edit Password")}}</strong>
                     <div class="kt-portlet__head-toolbar float-right">
                         <div class="kt-portlet__head-wrapper">
@@ -66,14 +75,15 @@
 {{--                                        class="la la-arrow-left"></i>Back</span>--}}
 {{--                            </a>--}}
                             <div class="btn-group">
-                                {!! Form::button('<i class="fa fa-save"></i> Save', ['type'=>'submit', 'class' =>'btn  btn-info']) !!}
+                                {!! html()->button()->type('submit')->class('btn btn-info')->html('<i class="fa fa-save"></i> Save') !!}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     @include('users::users.fields_password')
-                    {!! Form::close() !!}
+
+                    {!! html()->closeModelForm() !!}
                 </div>
             </div>
         </div>
@@ -82,3 +92,22 @@
     <!-- /.row-->
 
 @endsection
+
+@push('js')
+
+    <script>
+        function toggleDoctorFields(select) {
+            const doctorFields = document.getElementById('doctorFields');
+            if (select.value === 'doctor') {
+                doctorFields.style.display = 'block';
+                // Enable all disabled inputs inside the doctorFields section
+                doctorFields.querySelectorAll('input').forEach(input => input.disabled = false);
+            } else {
+                doctorFields.style.display = 'none';
+                // Disable all inputs inside the doctorFields section
+                doctorFields.querySelectorAll('input').forEach(input => input.disabled = true);
+            }
+        }
+    </script>
+
+@endpush

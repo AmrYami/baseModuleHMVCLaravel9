@@ -21,12 +21,19 @@
                                    class='btn btn-default btn-xs'><i class="fa fa-edit"></i></a>
                             @endcan
                             @can('delete-users-role')
-                                {!! Form::open(['route' => ['roles.destroy', $role->id], 'method'
-                                => 'delete', 'class' =>'d-inline-block']) !!}
-                                {!! Form::button('<i class="fa fa-trash"></i>',
-                                    ['type' => 'submit', 'class' => 'btn btn-danger btn-xs',
-                                    'onclick' => "return confirm('Are you sure you woant to delete this user?')"]) !!}
-                                {!! Form::close() !!}
+
+
+                                    {!! html()->form('DELETE', route('roles.destroy', $role->id))
+                                        ->class('d-inline-block')
+                                        ->open()
+                                    !!}
+
+                                    {!! html()->button('<i class="fa fa-trash"></i>')
+                                        ->type('submit')
+                                        ->class('btn btn-danger btn-xs')
+                                        ->attribute('onclick', "return confirm('Are you sure you want to delete this role?')") !!}
+
+                                    {!! html()->closeModelForm() !!}
                             @endcan
                         </div>
                     @endif

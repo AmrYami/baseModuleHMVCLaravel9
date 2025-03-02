@@ -1,48 +1,73 @@
-@extends('layouts.core')
-@section("page-name", trans("setup.Users"))
-@section("breadcrumb")
-    <div class="d-flex align-items-center flex-wrap mr-1">
-        <!--begin::Page Heading-->
-        <div class="d-flex align-items-baseline flex-wrap mr-5">
-            <!--begin::Page Title-->
-            <h5 class="text-dark font-weight-bold my-1 mr-5">@lang('users.Users')</h5>
-            <!--end::Page Title-->
-            <!--begin::Breadcrumb-->
-            <ul class="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 my-2 font-size-sm">
-                <li class="breadcrumb-item text-muted">
-                    <a href="{{route("dashboard")}}" class="text-muted">@lang('modules.Dashboard')</a>
-                </li>
-                <li class="breadcrumb-item text-muted">
-                    <a class="text-muted">@lang('users.Users')</a>
-                </li>
-                <li class="breadcrumb-item text-muted">
-                    <a href="" class="text-muted">@lang('users.Create')</a>
-                </li>
-            </ul>
-            <!--end::Breadcrumb-->
-        </div>
-        <!--end::Page Heading-->
-    </div>
-@endsection
+@php
+    $page = __('sidebar.Users');
+    $breadcrumb = [
+        [
+            "title" => __('sidebar.Users'),
+            "url" => route('users.index')
+        ],
+        [
+            "title" => __('sidebar.New User'),
+        ],
+    ];
+@endphp
+@extends('dashboard.mt.main')
 @section('content')
-<!-- /.row-->
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header"><strong>{{trans("setup.Create")}}</strong></div>
-            <div class="card-body">
-                {!! Form::open(['route' => 'users.store', "class"=>"form-horizontal", 'id'=> 'kt_form', 'autocomplete' => 'off', 'enctype'=>"multipart/form-data"]) !!}
-                @include('users::users.role_field')
-                @include('users::users.fields')
-                @include('users::users.fields_password')
-                {!! Form::button('<i class="fa fa-save"></i> Save', ['type'=>'submit', 'class' =>'btn  btn-info']) !!}
+    <x-layout.mt.cards.basic :title="__('users.Create New User')">
+        <x-slot:toolbar>
+            <x-layout.mt.buttons.back :url='route("users.index")'/>
+        </x-slot:toolbar>
+        <x-layout.mt.forms.form :action="route('users.store')">
+            <x-slot:attributes>
+                enctype="multipart/form-data"
+                autocomplete="off"
+            </x-slot:attributes>
+            @include('users::users.role_field')
+            @include('users::users.fields')
+            @include('users::users.fields_password')
 
-                {!! Form::close() !!}
-            </div>
-        </div>
-    </div>
-    <!-- /.col-->
-</div>
-<!-- /.row-->
-
+        </x-layout.mt.forms.form>
+    </x-layout.mt.cards.basic>
 @endsection
+@push('js')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let roleSelect = document.querySelector('#roleSelect');
+console.log(roleSelect)
+            // Ensure Select2 initializes properly
+            $(roleSelect).on('change', function () {
+                toggleDoctorFields(this);
+            });
+
+            function toggleDoctorFields(select) {
+                const doctorFields = document.getElementById('doctorFields');
+                if (select.value === 'doctor') {
+                    doctorFields.style.display = 'block';
+                    // Enable all disabled inputs inside the doctorFields section
+                    doctorFields.querySelectorAll('input').forEach(input => input.disabled = false);
+                } else {
+                    doctorFields.style.display = 'none';
+                    // Disable all inputs inside the doctorFields section
+                    doctorFields.querySelectorAll('input').forEach(input => input.disabled = true);
+                }
+            }
+        });
+    </script>
+
+    <script>
+        document.getElementById('image-upload').addEventListener('change', function (event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById('preview-container').style.backgroundImage = `url('${reader.result}')`;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+
+        // Remove Image Preview
+        document.getElementById('remove-image').addEventListener('click', function () {
+            document.getElementById('preview-container').style.backgroundImage = "url('/default-profile.jpg')";
+            document.getElementById('image-upload').value = ""; // Clear input
+        });
+
+    </script>
+@endpush

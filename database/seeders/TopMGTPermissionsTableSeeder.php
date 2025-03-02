@@ -90,7 +90,16 @@ class TopMGTPermissionsTableSeeder extends Seeder
             [
                 "name"=> "edit-users",
                 "display_name" => "Edit User",
-                "description" => "Who can edit data of exist user of internal team",
+                "description" => "Who can edit data of exist user",
+                "permission_group"=>"top-mgt",
+                "guard_name" => "web",
+                "created_at" => Carbon::now()->toDateTimeString(),
+            ],
+
+            [
+                "name"=> "edit-doctor",
+                "display_name" => "Edit Doctor",
+                "description" => "Who can edit data of exist doctor",
                 "permission_group"=>"top-mgt",
                 "guard_name" => "web",
                 "created_at" => Carbon::now()->toDateTimeString(),
@@ -99,7 +108,7 @@ class TopMGTPermissionsTableSeeder extends Seeder
             [
                 "name"=> "edit-my-profile",
                 "display_name" => "Edit User Profile",
-                "description" => "Who can edit data of exist user of internal team",
+                "description" => "Who can edit data of exist user",
                 "permission_group"=>"top-mgt",
                 "guard_name" => "web",
                 "created_at" => Carbon::now()->toDateTimeString(),
@@ -137,6 +146,15 @@ class TopMGTPermissionsTableSeeder extends Seeder
                 "name"=> "permanent-delete-from-trash",
                 "display_name" => "Permenant Delete From Trash",
                 "description" => "Who can permanent delete from trash",
+                "permission_group"=>"top-mgt",
+                "guard_name" => "web",
+                "created_at" => Carbon::now()->toDateTimeString(),
+            ],
+
+            [
+                "name"=> "export-doctors",
+                "display_name" => "export doctors data to csv",
+                "description" => "Who can export doctors data",
                 "permission_group"=>"top-mgt",
                 "guard_name" => "web",
                 "created_at" => Carbon::now()->toDateTimeString(),

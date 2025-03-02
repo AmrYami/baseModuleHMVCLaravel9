@@ -17,7 +17,7 @@ class users extends Seeder
     {
         $data = [
             [
-                'name' => 'admin',
+                'name' => json_encode(['en' => 'admin', 'ar' => 'admin']),
                 'user_name' => 'admin',
                 'email' => 'admin@admin.com',
                 'mobile' => '01557011197',

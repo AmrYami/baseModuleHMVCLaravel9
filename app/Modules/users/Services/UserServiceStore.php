@@ -12,6 +12,9 @@ use Users\Models\User;
 use Users\Repositories\UserRepositoryShow;
 use Users\Repositories\UserRepositoryStore;
 
+/**
+ *
+ */
 class UserServiceStore extends Service implements ServiceStore
 {
     public $repo;
@@ -50,34 +53,41 @@ class UserServiceStore extends Service implements ServiceStore
      */
     public function save(Request $request)
     {
-            $request->request->add(['code' => uniqid()]);
-            $user = $this->userRepositoryStore->save($request->all());
-            if ($user)
-                $this->userRepositoryStore->assignRole($user, $request->role);
-            return $user;
+        $request->request->add(['code' => uniqid()]);
+        $user = $this->userRepositoryStore->save($request->all());
+        if ($user) {
+            $this->userRepositoryStore->assignRole($user, $request->role);
+            MediaFacade::mediafiles($request, $user);
+        }
+        return $user;
+
+    }
+
+
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
+     */
+    public function update($id, Request $request)
+    {
+        $data = $request->only($this->model->getFillable());
+        $user = $this->userRepositoryStore->update($id, $data);
+        if ($user) {
+            $userObject = $this->userRepositoryShow->find($id);
+            if ($request->role)
+                $this->userRepositoryStore->syncRole($userObject, $request->role);
+            MediaFacade::mediafiles($request, $userObject);
+        }
+        return $user;
 
     }
 
     /**
-     * Use save data into Repository
-     *
+     * @param $id
      * @param Request $request
-     * @return Boolean
+     * @return false|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
      */
-    public function update($id, Request $request)
-    {
-            $data = $request->only($this->model->getFillable());
-            $user = $this->userRepositoryStore->update($id, $data);
-            if ($user) {
-                $userObject = $this->userRepositoryShow->find($id);
-                if ($request->role)
-                    $this->userRepositoryStore->syncRole($userObject, $request->role);
-                MediaFacade::mediafiles($request, $userObject);
-            }
-            return $user;
-
-    }
-
     public function updatePassword($id, Request $request)
     {
         $this->clean_request($request);
@@ -118,6 +128,12 @@ class UserServiceStore extends Service implements ServiceStore
         $delete = $this->userRepositoryStore->update($id, $data, $request->all());
         return $delete;
     }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
+     */
     public function un_freeze(Request $request, $id = null)
     {
         $data = ['freeze' => 0];
@@ -126,6 +142,11 @@ class UserServiceStore extends Service implements ServiceStore
         return $delete;
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return mixed
+     */
     public function restore(Request $request, $id = null)
     {
         $restored = $this->repo->restore($request, $id);

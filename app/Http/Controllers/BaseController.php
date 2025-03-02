@@ -2,17 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Response;
 
 /**
- * @SWG\Swagger(
- *   basePath="/api/v1",
- *   @SWG\Info(
- *     title="Laravel Generator APIs",
- *     version="1.0.0",
- *   )
- * )
- * This class should be parent class for other API controllers
+ * This class should be parent class for other controllers
  * Class AppBaseController
  */
 class BaseController extends Controller

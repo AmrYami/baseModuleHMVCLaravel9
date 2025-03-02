@@ -40,33 +40,48 @@
                                class='btn btn-default btn-xs'><i class="fa fa-edit"></i></a>
                         @endcan
                         @can("delete-users")
-                            {!! Form::open(['route' => ['users.destroy', $user->id], 'method'
-                            => 'delete', 'class' =>'d-inline-block']) !!}
-                            {!! Form::button('<i class="fa fa-trash"></i>',
-                                ['type' => 'submit', 'class' => 'btn btn-danger btn-xs',
-                                'onclick' => "return confirm('Are you sure you woant to delete this user?')"]) !!}
-                            {!! Form::close() !!}
-                            @if($user->freeze == 0)
-                                {!! Form::open(['route' => ['users.freeze', $user->id], 'method'
-                                => 'PUT', 'class' =>'d-inline-block']) !!}
-                                {!! Form::button('Freeze',
-                                    ['type' => 'submit', 'class' => 'btn btn-danger btn-xs',
-                                    'onclick' => "return confirm('Are you sure you woant to freeze this user?')"]) !!}
-                                {!! Form::close() !!}
-                            @else
-                                {!! Form::open(['route' => ['users.un_freeze', $user->id], 'method'
-                                    => 'PUT', 'class' =>'d-inline-block']) !!}
-                                {!! Form::button('Un-Freeze',
-                                        ['type' => 'submit', 'class' => 'btn btn-danger btn-xs',
-                                        'onclick' => "return confirm('Are you sure you woant to un-freeze this user?')"]) !!}
-                                {!! Form::close() !!}
-                            @endif
-                            {{--                                    {!! Form::open(['route' => ['users.banned_until', $user->id], 'method'--}}
+                                {!! html()->form('DELETE', route('users.destroy', $user->id))
+                                    ->class('d-inline-block')
+                                    ->open()
+                                !!}
+
+                                {!! html()->button('<i class="fa fa-trash"></i>')
+                                    ->type('submit')
+                                    ->class('btn btn-danger btn-xs')
+                                    ->attribute('onclick', "return confirm('Are you sure you want to delete this user?')") !!}
+
+                                {!! html()->closeModelForm() !!}
+
+                                @if($user->freeze == 0)
+                                    {!! html()->form('PUT', route('users.freeze', $user->id))
+                                        ->class('d-inline-block')
+                                        ->open() !!}
+
+                                    {!! html()->button('Freeze')
+                                        ->type('submit')
+                                        ->class('btn btn-danger btn-xs')
+                                        ->attribute('onclick', "return confirm('Are you sure you want to freeze this user?')") !!}
+
+                                    {!! html()->closeModelForm() !!}
+                                @else
+                                    {!! html()->form('PUT', route('users.un_freeze', $user->id))
+                                        ->class('d-inline-block')
+                                        ->open() !!}
+
+                                    {!! html()->button('Un-Freeze')
+                                        ->type('submit')
+                                        ->class('btn btn-danger btn-xs')
+                                        ->attribute('onclick', "return confirm('Are you sure you want to un-freeze this user?')") !!}
+
+                                    {!! html()->closeModelForm() !!}
+                                @endif
+
+                                {{--                                    {!! Form::open(['route' => ['users.banned_until', $user->id], 'method'--}}
                             {{--                                    => 'PUT', 'class' =>'d-inline-block']) !!}--}}
                             {{--                                    {!! Form::button('Banned Until',--}}
                             {{--                                        ['type' => 'submit', 'class' => 'btn btn-danger btn-xs',--}}
                             {{--                                        'onclick' => "return confirm('Are you sure you woant to freeze this user?')"]) !!}--}}
-                            {{--                                    {!! Form::close() !!}--}}
+                            {{--                                    {!! Form::closeModelForm() !!}--}}
                         @endcan
                     </div>
                     @endif

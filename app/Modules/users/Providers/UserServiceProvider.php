@@ -21,7 +21,7 @@ class UserServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $moduleName = basename(dirname(__DIR__, 1));
         $this->loadRoutesFrom(loadRoute('web', $moduleName));

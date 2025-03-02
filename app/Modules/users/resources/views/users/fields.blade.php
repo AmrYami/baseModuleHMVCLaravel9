@@ -1,104 +1,93 @@
 <!-- Name Field -->
-<div class="form-group col-md-6 col-12">
-    {!! Form::label('name', 'Full Name *:') !!}
-    @if($errors->first('name'))
-        <small class="text-danger">{{$errors->first('name')}}</small>
-    @endif
-    {!! Form::text('name', null,
-        [
-            'class' => 'form-control',
-            'required'=>true,
-            "placeholder" => 'Name',
-            'max' => 255,
-            "min" => 3,
-            "autocomplete" => "off"
-        ])
-    !!}
-    @if ($errors->has('name'))
-        <span class="help-block">
-                        <strong>{{ $errors->first('name') }}</strong>
-                    </span>
-    @endif
-</div>
-<div class="form-group col-md-6 col-12">
-    {!! Form::label('user_name', 'User Name *:') !!}
-    @if($errors->first('user_name'))
-        <small class="text-danger">{{$errors->first('user_name')}}</small>
-    @endif
-    {!! Form::text('user_name', null,
-        [
-            'class' => 'form-control',
-            'required'=>true,
-            "placeholder" => 'User Name',
-            'max' => 255,
-            "min" => 3,
-            "autocomplete" => "off"
-        ])
-    !!}
-    @if ($errors->has('name'))
-        <span class="help-block">
-                        <strong>{{ $errors->first('name') }}</strong>
-                    </span>
-    @endif
-</div>
-<!-- Mail Field -->
-<div class="form-group col-md-6 col-12">
-    {!! Form::label('email', 'Email *:') !!}
-    {!! Form::email('email', null,
-        [
-            'class' => 'form-control',
-            'required'=>true,
-            "pattern"=>"^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$",
-            "placeholder" => 'Email',
-            'max' => 255,
-            "min" => 3,
-            "autocomplete" => "off"
-        ])
-    !!}
-    @if ($errors->has('email'))
-        <span class="help-block">
-                        <strong>{{ $errors->first('email') }}</strong>
-                    </span>
-    @endif
-</div>
-@if(isset($profile))
-<div class="form-group col-md-6 col-12">
-    {!! Form::label('status', 'Status *:') !!}
-    @if($errors->first('status'))
-        <br>
-        <small class="text-danger">{{$errors->first('status')}}</small>
-    @endif
-    {!! Form::select('status',  [Null=>__('select')]+$status, null,
-        [
-            'class' => 'form-control',
-            'name'=>'status',
-            'id'=>'exampleSelectd',
-            'required'=>true,
-        ])
-    !!}
-</div>
-@endif
-<!-- Mobile Field -->
-<div class="form-group col-md-6 col-12">
-    {!! Form::label('mobile', 'Mobile:') !!}
-    @if($errors->first('mobile'))
-        <br>
-        <small class="text-danger">{{$errors->first('mobile')}}</small>
-    @endif
-    {!! Form::text('mobile', null,
-    [
-        'class' => 'form-control',
-        'required'=>false,
-        "pattern"=>"^[0-9]+",
-        "placeholder" => 'Mobile',
-        'max' => 16,
-        "min" => 5,
-    ])
-!!}
-    @if ($errors->has('mobile'))
-        <span class="help-block">
-                        <strong>{{ $errors->first('mobile') }}</strong>
-                    </span>
+<div class="row">
+    <!-- Name Field (English) -->
+    <div class="form-group col-md-6 col-12 mt-2">
+        <!--begin::Input group-->
+        <div class="form-floating">
+            <input type="text" class="form-control"
+                    name="name[en]" placeholder="Name in English"
+                    value="{{$user?->getTranslation('name', 'en') ?? ''}}"
+                    maxlength="255" minlength="3" autocomplete="off" required/>
+            <label for="floatingInput">Name (English) <span class='text-danger'>*</span></label>
+        </div>
+        @if ($errors->has('name.en'))
+            <small class="text-danger">{{ $errors->first('name.en') }}</small>
+        @endif
+        <!--end::Input group-->
+    </div>
+    <!-- Name Field (Arabic) -->
+    <div class="form-group col-md-6 col-12 mt-2">
+        <!--begin::Input group-->
+        <div class="form-floating">
+            <input type="text" class="form-control"
+                    name="name[ar]" placeholder="Name in Arabic"
+                    value="{{$user?->getTranslation('name', 'ar') ?? ''}}"
+                    maxlength="255" minlength="3" autocomplete="off" required/>
+            <label for="floatingInput">Name (Arabic) <span class='text-danger'>*</span></label>
+        </div>
+        @if ($errors->has('name.ar'))
+            <small class="text-danger">{{ $errors->first('name.ar') }}</small>
+        @endif
+        <!--end::Input group-->
+    </div>
+    <!--begin::Input group-->
+    <div class="form-group col-md-6 col-12 mt-2">
+        <div class="form-floating">
+            <input type="text" class="form-control"
+                    name="user_name" placeholder="Name in Arabic"
+                    value="{{$user?->user_name ?? ''}}"
+                    maxlength="255" minlength="3" autocomplete="off" required/>
+            <label for="floatingInput">User Name <span class='text-danger'>*</span></label>
+        </div>
+        @if ($errors->has('user_name'))
+            <small class="text-danger">{{ $errors->first('user_name') }}</small>
+        @endif
+    </div>
+    <!--end::Input group-->
+    <!--begin::Input group-->
+    <div class="form-group col-md-6 col-12 mt-2">
+        <div class="form-floating">
+            <input type="text" class="form-control"
+                    name="email" placeholder="Email"
+                    value="{{$user?->user_name ?? ''}}"
+                    pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                    maxlength="255" minlength="3" autocomplete="off" required/>
+            <label for="floatingInput">Email <span class='text-danger'>*</span></label>
+        </div>
+        @if ($errors->has('email'))
+            <small class="text-danger">{{ $errors->first('email') }}</small>
+        @endif
+    </div>
+    <!--end::Input group-->
+    <!--begin::Input group-->
+    <div class="form-group col-md-6 col-12 mt-2">
+        <div class="form-floating">
+            <input type="text" class="form-control"
+                    name="mobile" placeholder="Mobile"
+                    value="{{$user?->mobile ?? ''}}"
+                    pattern="^[0-9]+$"
+                    maxlength="16" minlength="5" autocomplete="off" required/>
+            <label for="floatingInput">Mobile <span class='text-danger'>*</span></label>
+        </div>
+        @if ($errors->has('mobile'))
+            <small class="text-danger">{{ $errors->first('mobile') }}</small>
+        @endif
+    </div>
+    <!--end::Input group-->
+    @if (!isset($profile))
+    <div class="form-group col-md-6 col-12 mt-2">
+        <x-layout.mt.forms.select2
+            :name="'status'"
+            :options='$status'
+            :label="'Status'"
+            :required="true"/>
+        @if($errors->first('status'))
+            <br>
+            <small class="text-danger">{{$errors->first('status')}}</small>
+        @endif
+    </div>
     @endif
 </div>
+
+
 

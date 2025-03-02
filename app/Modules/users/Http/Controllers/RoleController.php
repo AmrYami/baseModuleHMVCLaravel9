@@ -2,7 +2,6 @@
 
 namespace Users\Http\Controllers;
 
-use Spatie\Permission\Models\Permission;
 use Users\Http\Requests\CreateRoleRequest;
 use Users\Http\Requests\UpdateRoleRequest;
 use App\Http\Controllers\BaseController;
@@ -26,10 +25,6 @@ class RoleController extends BaseController
 
     public function __construct(RoleServiceShow $serviceShow, RoleServiceStore $roleServiceStore)
     {
-        $this->middleware("permission:list-users-role", ['only' => ['index']]);
-        $this->middleware("permission:create-users-role", ['only' => ['create']]);
-        $this->middleware("permission:edit-users-role", ['only' => ['edit']]);
-        $this->middleware("permission:delete-users-role", ['only' => ['destroy']]);
         $this->serviceShow = $serviceShow;
         $this->roleServiceStore = $roleServiceStore;
     }
@@ -70,6 +65,7 @@ class RoleController extends BaseController
      */
     public function store(CreateRoleRequest $request): RedirectResponse
     {
+
         $role = $this->roleServiceStore->save($request);
         if ($role) {
             return redirect()->route('roles.index')->with('created', __('messages.Created', ['thing' => 'User Role']));

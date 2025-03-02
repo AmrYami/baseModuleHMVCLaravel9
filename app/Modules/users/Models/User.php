@@ -2,42 +2,90 @@
 
 namespace Users\Models;
 
+use App\Models\BaseAuthModel;
 use App\Notifications\ResetPassword;
-use NotificationChannels\WebPush\HasPushSubscriptions;
-use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Jetstream\HasTeams;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Translatable\HasTranslations;
 
-class User extends Authenticatable implements HasMedia, JWTSubject
+class User extends BaseAuthModel implements HasMedia, JWTSubject
 {
+
+    use HasApiTokens;
     use Notifiable;
     use HasRoles;
     use InteractsWithMedia;
     use SoftDeletes;
-    use HasPushSubscriptions;
+    use HasTranslations;
+    use HasFactory;
+    use HasProfilePhoto;
+    use HasTeams;
+    use TwoFactorAuthenticatable;
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
+
+
         'name',
         'user_name',
         'email',
         'mobile',
         'password',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
+        'remember_token',
+        'profile_photo_path',
+        'current_team_id',
         'language',
         'type',
         'freeze',
         'code',
         'status',
-        'banned_until'
+        'banned_until',
+        'specialization',
+        'hospital',
+        'designation',
+        'specialty',
+        'languages',
+        'experience',
+        'description',
+        'achievements',
+        'studies',
+        'work_experience',
+        'email_verified_at',
     ];
-
+    /**
+     * The attributes that are translatable.
+     *
+     * @var array
+     */
+    public $translatable = [
+        'name',
+        'specialization',
+        'hospital',
+        'designation',
+        'specialty',
+        'languages',
+        'experience',
+        'description',
+        'achievements',
+        'studies',
+        'work_experience',
+    ];
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -46,6 +94,8 @@ class User extends Authenticatable implements HasMedia, JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
     ];
 
     protected $dates = [
@@ -58,6 +108,7 @@ class User extends Authenticatable implements HasMedia, JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
     /**
      * Validation rules
@@ -68,13 +119,13 @@ class User extends Authenticatable implements HasMedia, JWTSubject
 
     ];
 
-    public function roleName()
+    public function hasGlobalRole($role)
     {
-        $role = user()->roles->pluck('name')->toArray();
-        if (isset($role[0]))
-            return $role[0];
+        if ($this->hasRole('CRM Admin')) {
+            return true; // Super Admins bypass team checks
+        }
 
-        return '';
+        return $this->hasRole($role, $this->currentTeam);
     }
 
 
@@ -103,6 +154,7 @@ class User extends Authenticatable implements HasMedia, JWTSubject
     {
         return [];
     }
+
 
 //    public function getFillable()
 //    {

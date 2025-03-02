@@ -30,7 +30,7 @@ class ViewServiceProvider extends ServiceProvider
             $view->with('allPermissions', $allPermissions);
         });
         View::composer(['users::users.role_field'], function ($view) {
-            $roles = Role::pluck('name','id')->toArray();
+            $roles = Role::pluck('name','name')->toArray();
             $view->with('roles', $roles);
         });
     }

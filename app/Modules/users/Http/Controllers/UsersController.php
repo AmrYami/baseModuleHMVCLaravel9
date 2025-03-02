@@ -2,7 +2,9 @@
 
 namespace Users\Http\Controllers;
 
+use App\Exports\DoctorExport;
 use Illuminate\Contracts\Support\Renderable;
+use Maatwebsite\Excel\Facades\Excel;
 use Users\Http\Requests\CreateUserRequest;
 use Users\Http\Requests\UpdateUserPasswordRequest;
 use Users\Http\Requests\UpdateUserRequest;
@@ -31,11 +33,6 @@ class UsersController extends BaseController
      */
     public function __construct(UserServiceShow $serviceShow, UserServiceStore $userServiceStore)
     {
-        $this->middleware('permission:list-users', ['only' => ['index']]);
-        $this->middleware('permission:create-users', ['only' => ['create']]);
-        $this->middleware('permission:edit-users', ['only' => ['edit']]);
-        $this->middleware('permission:block-users', ['only' => ['destroy']]);
-        $this->middleware('permission:edit-my-profile', ['only' => ['myProfile']]);
         $this->serviceShow = $serviceShow;
         $this->userServiceStore = $userServiceStore;
     }
@@ -45,7 +42,7 @@ class UsersController extends BaseController
      *
      * @param Request $request
      *
-     * @return Response
+     * @return Renderable
      */
     public function index(Request $request): Renderable
     {
@@ -56,9 +53,17 @@ class UsersController extends BaseController
     }
 
     /**
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export()
+    {
+        return Excel::download(new DoctorExport, 'doctore.csv');
+    }
+
+    /**
      * Show the form for creating a new user.
      *
-     * @return Response
+     * @return Renderable
      */
     public function create(Request $request)
     {
@@ -66,10 +71,9 @@ class UsersController extends BaseController
             0 => 'pending',
             1 => 'active',
         ];
-
         return view('users::users.create', [
-            'action' => 'create',
             'status' => $status,
+            'action' => 'create'
         ]);
     }
 
@@ -78,9 +82,9 @@ class UsersController extends BaseController
      *
      * @param CreateUserRequest $request
      *
-     * @return Response
+     * @return object
      */
-    public function store(CreateUserRequest $request)
+    public function store(CreateUserRequest $request): object|bool
     {
         try {
             $request->request->add(['type' => 'user']);
@@ -91,7 +95,8 @@ class UsersController extends BaseController
                 return back()->withErrors(__('common.Sorry But there Was an issue in saving Data please try again'));
             }
         } catch (\Exception $exception) {
-            return false;
+            return back()->withErrors(__('common.Sorry But there Was an issue in saving Data please try again'));
+
         }
     }
 
@@ -100,9 +105,9 @@ class UsersController extends BaseController
      *
      * @param int $id
      *
-     * @return Response
+     * @return object
      */
-    public function show($id): Renderable
+    public function show(int $id): object
     {
         $user = $this->serviceShow->find($id);
         if (empty($user)) {
@@ -118,9 +123,9 @@ class UsersController extends BaseController
      *
      * @param int $id
      *
-     * @return Response
+     * @return Renderable
      */
-    public function edit($id, Request $request)
+    public function edit($id, Request $request): Renderable
     {
         $status = [
             0 => 'pending',
@@ -135,16 +140,30 @@ class UsersController extends BaseController
     }
 
     /**
+     * @param $id
+     * @param Request $request
+     * @return Renderable
+     */
+    public function editDoctor($id, Request $request): Renderable
+    {
+        $user = $this->serviceShow->find($id, $request);
+        return view('users::users.edit_doctor', [
+            'user' => $user,
+            'action' => 'edit',
+        ]);
+    }
+
+    /**
      * Update the specified user in storage.
      *
      * @param int $id
      * @param UpdateUserRequest $request
      *
-     * @return Response
+     * @return object|bool
      */
-    public function update($id, UpdateUserRequest $request)
+    public function update($id, UpdateUserRequest $request): object|bool
     {
-        try {
+//        try {
             $request->merge(['type' => 'user']);
             $user = $this->userServiceStore->update($id, $request);
             if ($user) {
@@ -152,12 +171,17 @@ class UsersController extends BaseController
             } else {
                 return back()->withErrors(__('common.Sorry But there Was an issue in saving Data please try again'));
             }
-        } catch (\Exception $exception) {
-            return false;
-        }
+//        } catch (\Exception $exception) {
+//            return false;
+//        }
 
     }
 
+    /**
+     * @param $id
+     * @param UpdateUserPasswordRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update_password($id, UpdateUserPasswordRequest $request)
     {
         $user = $this->userServiceStore->updatePassword($id, $request);
@@ -208,11 +232,20 @@ class UsersController extends BaseController
     }
 
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|object
+     */
     public function myProfile(Request $request)
     {
         $user = $this->serviceShow->find(auth()->user()->id, $request);
+        $status = [
+            0 => 'pending',
+            1 => 'active',
+        ];
         return view('users::users.profile', [
             'action' => 'my profile',
+            'status' => $status,
             'user' => $user,
         ]);
     }
@@ -236,6 +269,11 @@ class UsersController extends BaseController
         }
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function un_freeze(Request $request, $id)
     {
         $delete = $this->userServiceStore->un_freeze($request, $id);

@@ -1,5 +1,10 @@
 <?php
 
+
+function getLang(){
+    return app()->getLocale();
+}
+
 function serverName()
 {
     $sslOrNot = env('HTTPS');
@@ -9,3 +14,6 @@ function serverName()
         $sslOrNot = 'https://';
     return $sslOrNot . request()->getHost();
 }
+
+
+

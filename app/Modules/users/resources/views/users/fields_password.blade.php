@@ -1,33 +1,30 @@
-<!-- Password Field -->
-<div class="form-group col-md-6 col-12">
-    {!! Form::label('password', 'Password *:') !!}
-    @if($errors->first('password'))
-        <small class="text-danger">{{$errors->first('password')}}</small>
-    @endif
-    {!! Form::password('password', [
-            'class' => 'form-control',
-            'required'=>($action == 'create')?true:false,
-            "placeholder" => 'Password',
-            'max' => 255,
-            "min" => 3,
-            "autocomplete" => "new-password",
-            "value" => ""
-        ])
-    !!}
-</div>
-<!-- Password Field -->
-<div class="form-group col-md-6 col-12">
-    {!! Form::label('password_confirmation', 'Confirm User Password *:') !!}
-    @if($errors->first('password_confirmation'))
-        <small class="text-danger">{{$errors->first('password_confirmation')}}</small>
-    @endif
-    {!! Form::password('password_confirmation', [
-            'class' => 'form-control',
-            'required'=>($action == 'create')?true:false,
-            "placeholder" => 'Confirm User Password',
-            'max' => 255,
-            "min" => 3,
-        ])
-    !!}
-</div>
+<div class="row">
+    <!-- Password Field -->
+    <!--begin::Input group-->
+    <div class="form-group col-md-6 col-12 mt-2">
+        <div class="form-floating">
+            <input type="password" class="form-control" 
+                    name="password" placeholder="Password" 
+                    maxlength="255" minlength="3" autocomplete="new-password" @if($action == 'create') required @endif />
+            <label for="floatingInput">Password @if($action == 'create') <span class='text-danger'>*</span> @endif </label>
+        </div>
+        @if ($errors->has('password'))
+            <small class="text-danger">{{ $errors->first('password') }}</small>
+        @endif
+    </div>
+    <!--end::Input group-->
 
+    <!--begin::Input group-->
+    <div class="form-group col-md-6 col-12 mt-2">
+        <div class="form-floating">
+            <input type="password" class="form-control" 
+                    name="password_confirmation" placeholder="Confirm User Password" 
+                    maxlength="255" minlength="3" @if($action == 'create') required @endif/>
+            <label for="floatingInput">Confirm User Password <span class='text-danger'>*</span></label>
+        </div>
+        @if ($errors->has('password'))
+            <small class="text-danger">{{ $errors->first('password') }}</small>
+        @endif
+    </div>
+    <!--end::Input group-->
+</div>

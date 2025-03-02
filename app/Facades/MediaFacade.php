@@ -271,17 +271,17 @@ class MediaFacade
     static function addToMedia($file, $item, $key)
     {
 //        try {
-
         if ($key == 'video') {
             $item->media()->where('collection_name', $key)->delete();
         }
         $filename = md5(uniqid() . time()) . '.' . $file->getClientOriginalExtension();
         Storage::disk('media')->put($filename, file_get_contents($file));
-        $pathToFile = Storage::disk('media')->url($filename);
+        $pathToFile = Storage::disk('media')->path($filename);
+
 //            if (getSettingVal('water_mark') && in_array($file->getClientOriginalExtension(), self::allTypes('images'))) {
 //                self::waterMark($pathToFile);
 //            }
-        $id_item = $item->addMedia(base_path() . '/' . $pathToFile)->setName($file->getClientOriginalName())->toMediaCollection($key);
+        $id_item = $item->addMedia($pathToFile)->setName($file->getClientOriginalName())->toMediaCollection($key);
 
         return true;
 //        } catch (Exception $e) {
